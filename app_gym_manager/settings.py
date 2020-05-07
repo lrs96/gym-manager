@@ -11,8 +11,6 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-import django_heroku
-
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -21,12 +19,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = '%^(=2x8lekucl5^q2k0)w(dd$1ub^n#2x82s^yxdoi8aj2^^53'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['https://gym-manager-ws.herokuapp.com/']
+ALLOWED_HOSTS = []
 
 # Application definition
 
@@ -38,8 +36,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'django-bootstrap-form',
+    'crispy_forms',
+    'api'
 ]
+
+#Crispy forms
+CRISPY_TEMPLATES_PACK = 'bootstrap4'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -54,7 +58,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'app_gym_manager.urls'
-LOGIN_URL = 'logar'
+LOGIN_URL = '/'
+LOGOUT_REDIRECT_URL = '/login'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = '' # mail service smtp
 EMAIL_HOST_USER = '' # email id
@@ -114,7 +119,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # LANGUAGE_CODE = 'en-us'
 LANGUAGE_CODE = 'pt-BR'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Sao_Paulo'
 
 USE_I18N = True
 
@@ -126,7 +131,3 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfile')
-
-django_heroku.settings(locals())

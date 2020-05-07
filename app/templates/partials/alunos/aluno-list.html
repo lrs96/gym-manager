@@ -1,52 +1,174 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block titlePage %} Listar Alunos {% endblock %}
 {% block content %}
 
 {% if request.user.is_staff %}
-    <div class="container-fluid">
-        <div class="row">
-            {% include 'partials/menu-lateral-dash/menu-lateral.html' %}
-            <div class="col-10">
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th>Nome</th>
-                        <th>cpf</th>
-                        <th>email</th>
-                        <th>dataNascimento</th>
-                        <th>ação</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for aluno in lista %}
-                    <tr>
-                        <td>{{ aluno.nome }}</td>
-                        <td>{{ aluno.cpf }}</td>
-                        <td>{{ aluno.email }}</td>
-                        <td>{{ aluno.dataNascimento }}</td>
-                
-                        <td>
-                            <a href="{% url 'editar_aluno' pk=aluno.pk %}">
-                                <i class="material-icons">edit</i>
-                            </a>
-                            <a href="{% url 'remover_aluno' pk=aluno.pk %}">
-                                <i class="material-icons">delete</i>
-                            </a>
-                        </td>
-                
-                    </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-                <a href="{% url 'cadastrar_aluno' %}">
-                    <button type="submit" class="btn btn-primary">
-                        Cadastrar
-                    </button>
-                </a>
-                
-            </div>
+<div class="container-fluid pageListarAlunos">
+    <div class="row">
+        {% include 'partials/menu-lateral-dash/menu-lateral.html' %}
+        <div class="col-12 col-lg-10" id="content-dashboard">
+            {% include 'partials/menu-topo-dash/topo.html' %}
+            <section class="container-fluid px-0 px-sm-2">
+                <div class="row">
+                    <div class="col-12 text-white" id="sectionTitlePage">
+                        <h1 class="mb-3 mb-lg-4">Lista de alunos</h1>
+                        <ul class="list-group list-group-horizontal text-white bg-transparent">
+                            <li class="list-group-item border-0 p-0"><a href="{% url 'index' %}"><i class="fas fa-home pr-3"></i> Dashboard</a></li>
+                            <li class="list-group-item border-0 p-0"> Lista de alunos</li>
+                        </ul>
+                    </div>
+                    <div class="col-12" data-section="atalhos" id="">
+                        <div class="row px-0 pt-4">
+                            <div class="col-12 mb-4">
+                                <div class="card">
+                                    <div class="card-header d-flex flex-wrap align-items-center justify-content-between">
+                                        <div class="title d-flex align-items-center">
+                                            <img src="{% static 'img/icon-user-run.svg' %}" class="img-fluid pr-3" alt="User">
+                                            <h2 class="mb-0 h4">Todos os Alunos</h2>
+                                        </div>
+                                        <a href="{% url 'cadastrar_aluno' %}" class="btn btn-base-yellow mt-3 mt-sm-0">Adicionar Aluno</a>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-12 col-md-7 col-lg-8">
+                                                <form method="GET" action="">
+                                                    <div class="input-group mb-0">
+                                                        {{filtro}}
+                                                        <div class="input-group-append">
+                                                            <button class="btn btn-secondary" type="submit"
+                                                                style="min-width: auto;">
+                                                                Filtrar
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div class="col-12 col-md-5 col-lg-4 pt-3 pt-md-0 d-flex justify-content-md-end">
+                                                <div class="paginacao step-links row align-items-center">
+                                                    <div class="col-auto d-flex px-2">
+                                                        <a class="btn btn-secondary" style="min-width: auto;" href="?page={{ page_obj.previous_page_number }}">
+                                                            <i class="fas fa-angle-left"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="col-auto d-flex px-2">
+                                                        {% if paginacao.has_previous %}
+                                                        <a class="btn btn-secondary" style="min-width: auto;" href="?page=1">1</a>
+                                                        {% endif %}
+                                                        <a class="btn bg-blue text-white" style="min-width: auto;">{{ paginacao.number }} </a>
+                                                        <a class="btn btn-secondary" style="min-width: auto;">...</a>
+                                                        <a class="btn btn-secondary" href="?page={{paginacao.paginator.num_pages}}" style="min-width: auto;">{{ paginacao.paginator.num_pages }}</a>
+                                                    </div>
+                                                    <div class="col-auto d-flex px-2">
+                                                    {% if paginacao.has_next %}
+                                                        <a class="btn btn-secondary" style="min-width: auto;" href="?page={{ paginacao.next_page_number }}">
+                                                            <i class="fas fa-angle-right"></i>
+                                                        </a>
+                                                        <a class="btn btn-secondary d-none" style="min-width: auto;" href="?page={{ paginacao.paginator.num_pages }}">último</a>
+                                                    {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row px-0 pt-lg-3" id="listAlunos" data-section="listAlunos">
+                                            <div class="col-12 py-3" id="listAlunosTopo">
+                                                <div class="row d-none d-lg-flex">
+                                                    <div class="col-12 col-lg-3">
+                                                        <h3 class="h6 mb-0">Nome</h3>
+                                                    </div>
+                                                    <div class="col-12 col-lg-2">
+                                                        <h3 class="h6 mb-0">CPF</h3>
+                                                    </div>
+                                                    <div class="col-12 col-lg-2">
+                                                        <h3 class="h6 mb-0">Nascimento</h3>
+                                                    </div>
+                                                    <div class="col-12 col-lg-5">
+                                                        <h3 class="h6 mb-0">Ações</h3>
+                                                    </div>
+                                                </div>
+                                                <div class="row d-block d-lg-none">
+                                                    <div class="col-12 col-lg-5">
+                                                        <h3 class="h5 mb-0">Lista dos alunos</h3>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                {% for aluno in paginacao %}
+                                                <div class="row align-items-center py-2 mb-3 mb-lg-2 mx-0" data-id="listAlunosItem">
+                                                    <div class="col-12 col-lg-3 pb-2 pb-lg-0">
+                                                        <p class="mb-0" id="nomeUser">
+                                                            <span class="h6 font-weight-bold d-inlilne-block d-lg-none">Nome: </span>
+                                                            {{ aluno.nome }}</p>
+                                                    </div>
+                                                    <div class="col-12 col-lg-2 pb-2 pb-lg-0">
+                                                        <p class="mb-0">
+                                                            <span class="h6 font-weight-bold d-inline-block d-lg-none">CPF: </span>
+                                                            {{ aluno.cpf }}</p>
+                                                    </div>
+                                                    <div class="col-12 col-lg-2 pb-2 pb-lg-0">
+                                                        <p class="mb-0">
+                                                            <span class="h6 font-weight-bold d-block d-lg-none">Nascimento: </span>
+                                                            {{ aluno.dataNascimento }}</p>
+                                                    </div>
+                                                    <div class="col-12 col-lg-5 pt-2 pt-lg-0 d-lg-flex align-items-center justify-content-between">
+                                                        <div class="buttons">
+                                                            <a class="btn btn-sm btn-base-blue mr-2" style="min-width: auto;" href="{% url 'details_aluno' pk=aluno.pk %}">
+                                                                Relatório Físico
+                                                            </a>
+                                                            <a class="btn btn-sm btn-base-blue-outline" style="min-width: auto;" href="{% url 'historico_avaliacao' pk=aluno.pk %}">
+                                                                Avaliações
+                                                            </a>
+                                                        </div>
+                                                        <div class="dropright pl-3 pl-lg-4 d-none d-lg-block">
+                                                            <a href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="4" height="20" viewBox="0 0 4 20"><circle cx="2" cy="2" r="2" fill="#828282"/><circle cx="2" cy="2" r="2" transform="translate(0 8)" fill="#828282"/><circle cx="2" cy="2" r="2" transform="translate(0 16)" fill="#828282"/></svg>
+                                                            </a>
+                                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                                                <a class="dropdown-item"  href="{% url 'editar_aluno' pk=aluno.pk %}">Editar aluno</a>
+                                                                <a class="dropdown-item" href="#" onclick="deleteUser($(this))">Deletar aluno
+                                                                    <input type="hidden" value="{{ aluno.nome }}">
+                                                                    <input type="hidden" id="actionUser" value="{{ aluno.pk }}">
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="dropright absolute pl-3 pl-lg-4 d-block d-lg-none">
+                                                        <a href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="4" height="20" viewBox="0 0 4 20"><circle cx="2" cy="2" r="2" fill="#828282"/><circle cx="2" cy="2" r="2" transform="translate(0 8)" fill="#828282"/><circle cx="2" cy="2" r="2" transform="translate(0 16)" fill="#828282"/></svg>
+                                                        </a>
+                                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                                            <a class="dropdown-item"  href="{% url 'editar_aluno' pk=aluno.pk %}">Editar aluno</a>
+                                                            <a class="dropdown-item" href="#" onclick="deleteUser($(this))">Deletar aluno
+                                                                <input type="hidden" value="{{ aluno.nome }}">
+                                                                <input type="hidden" id="actionUser" value="{{ aluno.pk }}">
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
     </div>
+</div>
+
+<form method="POST" class="d-none">
+    {% csrf_token %}
+    <h4>Tem certeza que deseja excluir o aluno?</h4>
+    <input type="hidden" id="pkAluno" value="" name="pkaluno">
+</form>
 {% endif %}
 
 {% endblock content %}
+
+
+{% block scripts %}
+<script src="{% static 'js/usuarios.js' %}"></script>
+{% endblock %}

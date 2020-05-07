@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load filter_date %}
+{% block titlePage %} Histórico de Avaliações {% endblock %}
+{% block content %}
+
+{% if request.user.is_staff %}
+<div class="container-fluid">
+    <div class="row">
+        {% include 'partials/menu-lateral-dash/menu-lateral.html' %}
+        <div class="col-12 col-lg-10" id="content-dashboard">
+            {% include 'partials/menu-topo-dash/topo.html' %}
+            <section class="container-fluid px-0 px-sm-2">
+                <div class="row">
+                    <div class="col-12 text-white" id="sectionTitlePage">
+                        <h1 class="mb-3 mb-lg-4">Histórico de Avaliações</h1>
+                        <ul class="list-group list-group-horizontal text-white bg-transparent">
+                            <li class="list-group-item border-0 p-0">
+                              <a href="{% url 'index' %}">
+                                <i class="fas fa-home pr-3"></i> Dashboard
+                              </a>
+                            </li>
+                            <li class="list-group-item border-0 p-0">
+                              <a href="{% url 'aluno_list' %}">Lista de alunos</a>
+                            </li>
+                            <li class="list-group-item border-0 p-0">
+                              Avaliações do aluno {% for item in aluno  %} {{item.nome}} {% endfor %}
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-12" data-section="atalhos" id="">
+                        <div class="row px-0 pt-4">
+                            <div class="col-12 mb-4">
+                              <h2 class="mb-0 h4 text-white">Histórico</h2>
+                            </div>
+                            {% if avaliacoes %}
+                              {% for avaliacao in avaliacoes %}
+                              <div class="col-12 col-sm-6 col-md-4 mb-4">
+                                <div class="card">                                  
+                                  <div class="card-body">
+                                    <div class="row mb-3 mb-lg-4">
+                                      <div class="col">
+                                        <h1 class="h5 mb-0">Avaliação {{ avaliacao.id }} </h1>
+                                      </div>
+                                      <div class="col">
+                                        <div class="dropright pl-3 pl-lg-4 d-none d-lg-block">
+                                          <a href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                              <svg class="float-right" xmlns="http://www.w3.org/2000/svg" width="4" height="20" viewBox="0 0 4 20"><circle cx="2" cy="2" r="2" fill="#828282"/><circle cx="2" cy="2" r="2" transform="translate(0 8)" fill="#828282"/><circle cx="2" cy="2" r="2" transform="translate(0 16)" fill="#828282"/></svg>
+                                          </a>
+                                          <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                            <a class="dropdown-item"  href="{% url 'editar_avaliacao' pk=avaliacao.pk %}">Editar Avaliação</a>
+                                            <a class="dropdown-item" href="#" onclick="deleteAvaliacao($(this))">Deletar
+                                                <input type="hidden" id="actionUser" value="{{ avaliacao.pk }}">
+                                            </a>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <p class="mb-3">Avaliação cadastrada em {{ avaliacao.created_at|filter_date }}</p> 
+                                    <a href="{% url 'details_avaliacao' pk=avaliacao.pk %}" class="btn p-0" style="min-width: auto;">Detalhes</a>
+                                  </div>
+                                </div>
+                              </div>                           
+                              {% endfor %}
+                            {% else %}
+                              <div class="col-12">
+                                <h3 class="mb-0 h5 text-white">Não existem avaliações cadastradas para esse aluno.</h3>
+                              </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<form method="POST" class="d-none">
+    {% csrf_token %}
+    <input type="hidden" id="pkavaliacao" value="" name="pkavaliacao">
+</form>
+{% endif %}
+
+{% endblock content %}
+
+{% block scripts %}
+<script src="{% static 'js/usuarios.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load filter_date %}
+{% block titlePage %} Detalhes da Avaliação {% endblock %}
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row">
+        {% include 'partials/menu-lateral-dash/menu-lateral.html' %}
+        <div class="col-12 col-lg-10" id="content-dashboard">
+            {% include 'partials/menu-topo-dash/topo.html' %}
+            <section class="container-fluid px-0 px-sm-2">
+                <div class="row">
+                    <div class="col-12 text-white" id="sectionTitlePage">
+                        <h1 class="mb-3 mb-lg-4">Detalhes da Avaliação</h1>
+                        <ul class="list-group list-group-horizontal text-white bg-transparent">
+                            <li class="list-group-item border-0 p-0">
+                              <a href="{% url 'index' %}">
+                                <i class="fas fa-home pr-3"></i> Dashboard
+                              </a>
+                            </li>
+                            <li class="list-group-item border-0 p-0">
+                              <a href="{% url 'aluno_list' %}"> Lista de alunos </a>
+                            </li>
+                            {% for item in avaliacoes  %}
+                                <li class="list-group-item border-0 p-0">
+                                    <a href="{% url 'historico_avaliacao' pk=item.aluno_id %}"> Histórico de avaliações </a>
+                                </li>
+                            {% endfor %}
+                            <li class="list-group-item border-0 p-0"> 
+                              Detalhes da avaliação 
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-12" data-section="atalhos" id="">
+                        <div class="row px-0 pt-5">
+                            {% for avaliacao in avaliacoes %}
+                            <div class="col-12 col-sm-6 col-md-4 mb-4">
+                                <div class="card-group">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h3 class="h5 mb-0">Medidas</h3>
+                                        </div>  
+                                        <div class="card-body p-0">
+                                        <ul class="list-group">
+                                            <li class="list-group-item">
+                                                Peso: {{avaliacao.medida_peso}}
+                                            </li>
+                                            <li class="list-group-item">
+                                                Altura: {{avaliacao.medida_altura}}
+                                            </li>
+                                            <li class="list-group-item">
+                                                Percentual de Gordura: {{ avaliacao.percentual_gordura }}
+                                            </li>
+                                            <li class="list-group-item">
+                                                Costas: {{avaliacao.medida_costas}}
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                Peito: {{avaliacao.medida_peito}}
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">  
+                                                Abdômen: {{avaliacao.medida_abdomen}}
+                                            </li>
+                                        </ul>
+                                        </div>                                 
+                                    </div>   
+                                </div>
+                            </div> 
+                            <div class="col-12 col-sm-6 col-md-4 mb-4">
+                                <div class="card-group">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h3 class="h5 mb-0">Membros Posteriores</h3>
+                                        </div>  
+                                        <div class="card-body p-0">
+                                        <ul class="list-group">
+                                            <li class="list-group-item p-0 border-0">
+                                                <span class="d-block px-3 py-2 bg-secondary">Bíceps</span>
+                                                <ul class="d-flex list-inline bg-white py-2 px-3">
+                                                    <li class="list-inline-item col px-0">Direito: {{avaliacao.medida_biceps_direito}}</li>
+                                                    <li class="list-inline-item col px-0">Esquerdo: {{avaliacao.medida_biceps_esquerdo}}</li>
+                                                </ul>
+                                            </li>
+                                            <li class="list-group-item p-0 border-0">
+                                                <span class="d-block px-3 py-2 bg-secondary">Tríceps</span>
+                                                <ul class="d-flex list-inline bg-white py-2 px-3">
+                                                    <li class="list-inline-item col px-0">Direito: {{avaliacao.medida_triceps_direito}}</li>
+                                                    <li class="list-inline-item col px-0">Esquerdo: {{avaliacao.medida_triceps_esquerdo}}</li>
+                                                </ul>
+                                            </li>
+                                            <li class="list-group-item p-0 border-0">
+                                                <span class="d-block px-3 py-2 bg-secondary">Antebraço</span>
+                                                <ul class="d-flex list-inline bg-white py-2 px-3">
+                                                    <li class="list-inline-item col px-0">Direito: {{avaliacao.medida_antebraco_direito}}</li>
+                                                    <li class="list-inline-item col px-0">Esquerdo: {{avaliacao.medida_antebraco_esquerdo}}</li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                        </div>                                 
+                                    </div>   
+                                </div>
+                            </div> 
+                            <div class="col-12 col-sm-6 col-md-4 mb-4">
+                                <div class="card-group">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h3 class="h5 mb-0">Membros Inferiores</h3>
+                                        </div>  
+                                        <div class="card-body p-0">
+                                        <ul class="list-group">
+                                            <li class="list-group-item p-0 border-0">
+                                                <span class="d-block px-3 py-2 bg-secondary">Coxa</span>
+                                                <ul class="d-flex list-inline bg-white py-2 px-3">
+                                                    <li class="list-inline-item col px-0">Direita: {{avaliacao.medida_coxa_direito}}</li>
+                                                    <li class="list-inline-item col px-0">Esquerda: {{avaliacao.medida_coxa_esquerdo}}</li>
+                                                </ul>
+                                            </li>
+                                            <li class="list-group-item p-0 border-0">
+                                                <span class="d-block px-3 py-2 bg-secondary">Panturrila</span>
+                                                <ul class="d-flex list-inline bg-white py-2 px-3">
+                                                    <li class="list-inline-item col px-0">Direita: {{avaliacao.medida_panturrilha_direito}}</li>
+                                                    <li class="list-inline-item col px-0">Esquerda: {{avaliacao.medida_panturrilha_esquerdo}}</li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                        </div>                                 
+                                    </div>   
+                                </div>
+                            </div>      
+                            <div class="col-12 d-flex align-items-center">
+                                <a class="btn btn-outline-danger mr-3" href="#" onclick="deleteAvaliacao($(this))">Deletar
+                                    <input type="hidden" id="actionUser" value="{{ avaliacao.pk }}">
+                                </a>
+                                <a href="{% url 'editar_avaliacao' pk=avaliacao.pk %}" class="btn btn-base-yellow">Editar Avaliação</a>
+                            </div>                     
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<form method="POST" class="d-none">
+    {% csrf_token %}
+    <input type="hidden" id="pkavaliacao" value="" name="pkavaliacao">
+</form>
+
+{% endblock content %}
+
+{% block scripts %}
+<script src="{% static 'js/usuarios.js' %}"></script>
+{% endblock %}

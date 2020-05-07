@@ -8,8 +8,10 @@
     <meta name="csrf-token" content="RuEJlQygGGuzgcX3D9IeH2GHutdF35EclIBqt551">
     <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'css/custom.css' %}" type="text/css">
+    <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
     {% block css %} {% endblock %}
     <title>{% block titlePage %}{% endblock%} - Academia Cia Life</title>
+    <script src="{% static 'js/libs/fontawesome.min.js' %}"></script>
   </head>
 
 <body>
@@ -21,6 +23,9 @@
 <script src="{% static 'js/libs/jquery.min.js' %}"></script>
 <script src="{% static 'js/libs/popper.min.js' %}"></script>
 <script src="{% static 'js/libs/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/libs/sweetalert.min.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'js/activeMenu.js' %}"></script>
 {% block scripts %}{% endblock %}
 
 </body>

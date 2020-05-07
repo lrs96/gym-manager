@@ -1,17 +1,22 @@
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Aluno
-from .forms import AlunoForm
-
+from django.db.models import Count, Sum
+from ..models import Aluno, Ficha_fisica
+from ..forms import FilterAluno
+from django.db.models.expressions import datetime
 # Create your views here.
 @login_required
 def registrar_usuario(request, template_name="registrar.html"):
+    # Filtrar Aluno
+    query = request.GET.get("campoFilter")
+    campoFiltro = FilterAluno()
+    if query:
+        return redirect(f'/listar-aluno/?campoFilter={query}')
+
     if request.method == "POST":
         username = request.POST['username']
         email = request.POST['email']
@@ -30,13 +35,19 @@ def registrar_usuario(request, template_name="registrar.html"):
 
         return redirect('/app/listar_usuario/')
     else:
-        return render(request, template_name)
+        return render(request, template_name, {'filtro': campoFiltro})
 
 
 @login_required
 def listar_usuario(request, template_name="listar.html"):
+    # Filtrar Aluno
+    query = request.GET.get("campoFilter")
+    campoFiltro = FilterAluno()
+    if query:
+        return redirect(f'/listar-aluno/?campoFilter={query}')
+
     usuarios = User.objects.all()
-    usuario = {'lista': usuarios}
+    usuario = {'lista': usuarios, 'filtro': campoFiltro}
     return render(request, template_name, usuario)
 
 
@@ -52,14 +63,20 @@ def logar(request, template_name="login.html"):
             return HttpResponseRedirect(next)
 
         else:
-            messages.error(request, 'Usuário ou senha incorretos.')
-            return HttpResponseRedirect(settings.LOGIN_URL)
+            messages.error(request, 'Usuário ou senha informadas, estão incorretas.')
+            return redirect('logar')
 
     return render(request, template_name, {'redirect_to': next})
 
 
 @login_required
 def remover_usuario(request, pk, template_name='delete.html'):
+    # Filtrar Aluno
+    query = request.GET.get("campoFilter")
+    campoFiltro = FilterAluno()
+    if query:
+        return redirect(f'/listar-aluno/?campoFilter={query}')
+
     user = request.user
     if user.has_perm('user.delete_user'):
         try:
@@ -76,55 +93,43 @@ def remover_usuario(request, pk, template_name='delete.html'):
 
     return render(request, template_name, {'usuario': usuario})
 
+
 @login_required
 def index(request, template_name='dashboard-adm.html'):
-    return render(request, template_name)
+    # Filtrar Aluno
+    query = request.GET.get("campoFilter")
+    campoFiltro = FilterAluno()
+    if query:
+        return redirect(f'/listar-aluno/?campoFilter={query}')
+
+    # insights
+    aluno = Aluno.objects.count()
+    fichas = Ficha_fisica.objects.count()
+    sem_ficha = Aluno.objects.filter(id__in=Ficha_fisica.objects.values('aluno_id')).count()    
+
+    # gráficos
+    charts_aluno = Aluno.objects.filter().values('created_at__date').order_by('created_at__date').annotate(count=Count('id'))
+    charts_avaliacao = Ficha_fisica.objects.filter().values('created_at__date').order_by('created_at__date').annotate(count=Count('id'))
+
+    dias = Ficha_fisica.objects.filter().extra({'date_created' : "date(created_at)"}).values('created_at').annotate(created_count=Count('id'))
+
+    return render(request, template_name, 
+                    { 'aluno' : aluno,
+                      'fichas' : fichas,
+                      'filtro': campoFiltro,
+                      'sem_ficha': sem_ficha,
+                      'charts_aluno':charts_aluno,
+                      'charts_avaliacao': charts_avaliacao
+                     })
+
 
 def deslogar(request):
     logout(request)
-    return HttpResponseRedirect(settings.LOGIN_URL)
+    return redirect('logar')
+
 
 def esqueci_minha_senha(request):
     return render(request, 'esqueci-minha-senha.html')
-
-
-def cadastrar_aluno(request, template_name='partials/alunos/aluno-form.html'):
-    form = AlunoForm(request.POST or None)
-    if form.is_valid():
-        form.save()
-        return redirect('aluno_list')
-    return render(request, template_name,{
-                            'form': form
-                            })
-
-def listar_aluno(request, template_name="partials/alunos/aluno-list.html"):
-    query = request.GET.get("busca")
-    if query:
-        aluno = Aluno.objects.filter(modelo__icontains=query)
-    else:
-        aluno = Aluno.objects.all()
-    alunos = {'lista': aluno}
-    return render(request, template_name, alunos)
-
-
-def editar_aluno(request, pk, template_name='partials/alunos/aluno-form.html'):
-    aluno = get_object_or_404(Aluno, pk=pk)
-    if request.method == "POST":
-        form = AlunoForm(request.POST, instance=aluno)
-        if form.is_valid():
-            form.save()
-            return redirect('aluno_list')
-    else:
-        form = AlunoForm(instance=aluno)
-    return render(request, template_name, {'form': form})
-
-
-def remover_aluno(request, pk, template_name='partials/alunos/aluno-delete.html'):
-    aluno = Aluno.objects.get(pk=pk)
-    if request.method == "POST":
-        aluno.delete()
-        return redirect('aluno_list')
-    return render(request, template_name, {'aluno': aluno})
 
 
 def resetar_senha(request, template_name='registration/password_reset_form.html'):

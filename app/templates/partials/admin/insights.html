@@ -1,0 +1,36 @@
+{% load static %}
+<div class="row px-0 pt-4">
+    <div class="col-12 col-sm-6 col-lg-4 mb-4 mb-lg-0">
+        <div class="card text-center">
+            <div class="card-body py-3">
+              <img src="{% static 'img/icon-user-run.svg' %}" alt="User">
+              <h5 class="card-title font-weight-bold mt-3 mb-0">{{aluno}}</h5>
+            </div>
+            <div class="card-footer bg-blue py-3">
+                <p class="mb-0">Total de Alunos</p>
+            </div>
+          </div>
+    </div>
+    <div class="col-12 col-sm-6 col-lg-4 mb-4 mb-lg-0">
+        <div class="card text-center">
+            <div class="card-body py-3">
+              <img src="{% static 'img/icon-user-run.svg' %}" alt="User">
+              <h5 class="card-title font-weight-bold mt-3 mb-0">{{fichas}}</h5>
+            </div>
+            <div class="card-footer py-3">
+                <p class="mb-0">Avaliações Cadastradas</p>
+            </div>
+          </div>
+    </div>
+    <div class="col-12 col-sm-6 col-lg-4 mb-lg-0">
+        <div class="card text-center">
+            <div class="card-body py-3">
+              <img src="{% static 'img/icon-user-run.svg' %}" alt="User">
+              <h5 class="card-title font-weight-bold mt-3 mb-0">{{sem_ficha}}</h5>
+            </div>
+            <div class="card-footer bg-yellow py-3">
+                <p class="mb-0">Alunos com avaliação</p>
+            </div>
+          </div>
+    </div>
+</div>

@@ -1,0 +1,416 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load add_class %}
+{% load filter_date %}
+{% block titlePage %} Detalhes do Aluno {% endblock %}
+{% block content %}
+
+{% if request.user.is_staff %}
+    <div class="container-fluid">
+        <div class="row">
+            {% include 'partials/menu-lateral-dash/menu-lateral.html' %}
+            <div class="col-12 col-lg-10" id="content-dashboard">
+                {% include 'partials/menu-topo-dash/topo.html' %}
+                <section class="container-fluid px-0 px-sm-2">
+                    <div class="row">
+                        <div class="col-12 pt-3 pt-md-5" id="sectionDadosAluno">
+                            <div class="row px-0 align-items-center flex-wrap">
+                                <div class="col-md-8 col-lg-9 d-flex align-items-center">
+                                    <div class="d-flex flex-column">
+                                        <h2 class="mb-2 mb-md-3 text-white h4">{{ aluno.nome }} </h2>
+                                        <ul class="list-group list-group-horizontal text-white d-block font-italic">
+                                            <li class="list-group-item border-0 p-0 bg-transparent d-inline-block">
+                                                {{aluno.idade}} anos
+                                            </li>
+                                            <li class="list-group-item border-0 p-0 bg-transparent d-inline-block">
+                                               {% for altura in altura_aluno  %} {{altura.medida_altura}} {% endfor %} de altura
+                                            </li>
+                                            <li class="list-group-item border-0 p-0 bg-transparent d-inline-block">
+                                                {% if aluno.sexo == 'F' %}
+                                                    Feminino
+                                                {% else %}
+                                                    Masculino
+                                                {% endif %}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-lg-3 pt-3 pt-md-0 d-flex justify-content-md-end">
+                                     <a href="{% url 'cadastrar_avaliacao_fisica' %}" class="btn btn-base-yellow">Adicionar avaliação</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12" data-section="atalhos" id="alunos_details">
+                            <div class="row px-0 pt-4">
+                                <div class="col-md-6 col-lg-5 mb-4">
+                                    <div class="card">
+                                        <div class="card-body">
+                                        <h2 class="mb-3 h5 text-blue">Selecione o filtro</h2>
+                                        <form action="" method="POST">
+                                            {% csrf_token %}
+                                            {{filtro_de_musculos}}
+                                            <input type="hidden" id="idAlunoFiltro" name="{{ aluno.id }}" value="{{aluno.id}}">
+                                            <a href="#" id="filtar_medidas" onClick="FiltrarMedidas($(this))" class="btn btn-base-purple-light mt-3">Filtrar</a>
+                                        </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-7 mb-4">
+                                    <div class="card">
+                                        <div class="card-header d-flex flex-wrap align-items-center justify-content-between">
+                                            <div class="title d-flex align-items-center">
+                                                <img src="{% static 'img/icon-user-run.svg' %}" class="img-fluid pr-3" alt="User">
+                                                <h2 class="mb-0 h5">Medidas do músculo</h2>
+                                            </div>
+                                        </div>
+                                        <div class="card-body" id="evolucaoMedidas">
+                                            <canvas id="chartsMedidas"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-lg-6 mb-4">
+                                    <div class="card">
+                                        <div class="card-header d-flex flex-wrap align-items-center justify-content-between">
+                                            <div class="title d-flex align-items-center">
+                                                <img src="{% static 'img/icon-user-run.svg' %}" class="img-fluid pr-3" alt="User">
+                                                <h2 class="mb-0 h5">Porcentagem de gordura</h2>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <canvas id="chartPercentualDeGordura"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-lg-6 mb-4">
+                                    <div class="card">
+                                        <div class="card-header d-flex flex-wrap align-items-center justify-content-between">
+                                            <div class="title d-flex align-items-center">
+                                                <img src="{% static 'img/icon-user-run.svg' %}" class="img-fluid pr-3" alt="User">
+                                                <h2 class="mb-0 h5">Peso</h2>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <canvas id="chartPeso"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+{% endif %} 
+{% endblock content %}
+
+{% block scripts %}
+<script src="{% static 'js/libs/charts.min.js' %}"></script>
+<script>
+    $(document).ready(() => {      
+
+        // Funções
+        chartPeso();
+        chartPercentualGordura();
+
+        let medida_direita = [{% for i in entrys %} {{i.medida_biceps_direito|stringformat:'f'}}, {% endfor %}]
+        let medida_esquerda = [{% for i in entrys %} {{i.medida_biceps_esquerdo|stringformat:'f'}}, {% endfor %}]
+        new Chart(document.getElementById("chartsMedidas"), {
+            type: 'bar',
+            data: {
+                labels: [{% for item in entrys  %} '{{item.created_at|filter_date}}', {% endfor %}],
+                datasets: [
+                    {
+                        label: "Direito",
+                        backgroundColor: "#2e3192",
+                        data: medida_direita
+                    }, 
+                    {
+                        label: "Esquerdo",
+                        backgroundColor: "#F0B413",
+                        data: medida_esquerda
+                    }
+                ]
+            },
+            options: {
+                legend: {
+                    display: false
+                },
+                responsive: true,
+                    scaleStartValue: 0,
+                    scales: {
+                        xAxes: [{
+                            gridLines: {
+                                color: "rgba(65, 104, 136, 0.4)",
+                                borderDash: [5, 5],
+                            }
+                        }],
+                        yAxes: [{
+                        gridLines: {
+                            color: "rgba(65, 104, 136, 0.2)",
+                            drawBorder: false,
+                        },
+                        ticks: {
+                            stepSize: 2,
+                            fontColor: "rgba(65, 104, 136, 1)",
+                            fontSize: "12", 
+                            },
+                        }]
+                    }
+            }
+        });
+    });
+
+
+    function FiltrarMedidas(e) {
+        let selector = document.getElementById('id_filtros');
+        let value = selector[selector.selectedIndex].value;
+        let id = $('#idAlunoFiltro').val();
+        let qtd_de_avaliacoes = $('#id_quantidade_de_avaliacoes').val();
+        console.log(`Quantidade de avaliações: ${qtd_de_avaliacoes}`)
+        if( value == 'medida_antebraco' || value == 'medida_triceps' || value == 'medida_biceps' || value == 'medida_panturrilha' || value == 'medida_coxa') {
+            chartsMedidas(id, value, qtd_de_avaliacoes);
+        } else if (value == 'medida_costas' || value == 'medida_abdomen' || value == 'medida_peito') {
+            chartsMedidasUnica(id, value, qtd_de_avaliacoes);
+        }
+
+        console.log(value);
+    }
+
+    function chartPeso() {
+        new Chart(document.getElementById("chartPeso"), {
+            type: 'line',
+            data: {
+            labels: [{% for item in peso %} '{{item.get_created}}', {% endfor %}],
+            datasets: [{ 
+                data: [{%for item in peso %}{{item.medida_peso|stringformat:'f'}},{% endfor %}],
+                borderColor: "rgba(46, 49, 146, .6)",
+                backgroundColor: 'rgba(46, 49, 146, .1)',
+                pointBackgroundColor: 'rgba(240, 180, 19, 1)',
+                pointBorderColor: 'rgba(240, 180, 19, 1)',
+                },
+            ]},
+            options: {
+                legend: {
+                    display: false
+                },
+                responsive: true,
+                    scaleStartValue: 0,
+                    scales: {
+                        xAxes: [{
+                            gridLines: {
+                                color: "rgba(65, 104, 136, 0.4)",
+                                borderDash: [5, 5],
+                            }
+                        }],
+                        yAxes: [{
+                        gridLines: {
+                            color: "rgba(65, 104, 136, 0.2)",
+                            drawBorder: false,
+                        },
+                        ticks: {
+                            fontColor: "rgba(65, 104, 136, 1)",
+                            fontSize: "12", 
+                            },
+                        }]
+                    }
+            }
+        });
+    }
+
+    function chartPercentualGordura() {
+        new Chart(document.getElementById("chartPercentualDeGordura"), {
+            type: 'line',
+            data: {
+            labels: [{% for item in percentual_de_gordura %} '{{item.get_created}}', {% endfor %}],
+            datasets: [{ 
+                data: [{%for item in percentual_de_gordura %} {{item.percentual_gordura|stringformat:'f'}},{% endfor %}],
+                borderColor: "rgba(46, 49, 146, .6)",
+                backgroundColor: 'rgba(46, 49, 146, .1)',
+                pointBackgroundColor: 'rgba(240, 180, 19, 1)',
+                pointBorderColor: 'rgba(240, 180, 19, 1)',
+                },
+            ]},
+            options: {
+                legend: {
+                    display: false
+                },
+                responsive: true,
+                    scaleStartValue: 0,
+                    scales: {
+                        xAxes: [{
+                            gridLines: {
+                                color: "rgba(65, 104, 136, 0.4)",
+                                borderDash: [5, 5],
+                            }
+                        }],
+                        yAxes: [{
+                        gridLines: {
+                            color: "rgba(65, 104, 136, 0.2)",
+                            drawBorder: false,
+                        },
+                        ticks: {
+                            fontColor: "rgba(65, 104, 136, 1)",
+                            fontSize: "12", 
+                            },
+                        }]
+                    }
+            }
+        });
+    }
+
+    function chartsMedidas(pk, params, qtd_de_avaliacoes) {
+        fetch(`/api/${pk}/${params}/?filter=${qtd_de_avaliacoes}`, {
+            method: 'get',
+            data: 'json',
+            dataType: "json",
+        })
+        .then((response) => {
+            response.json()
+        .then((data) => {
+            $('#chartsMedidas').remove()
+            let novoChartsMedida = '<canvas id="chartsMedidas"></canvas>';
+            let result = data;
+            let medida_direita = []
+            let medida_esquerda = []
+            let dado = [];
+            if(params == 'medida_coxa' || params == 'medida_panturrilha' ) {
+                $.each(result, (i, chave, value) => {
+                    if(chave[`${params}_direita`]) {
+                        medida_direita.push(`${chave[`${params}_direita`]}`);
+                        medida_esquerda.push(`${chave[`${params}_esquerda`]}`);
+                        dado.push(`${chave['created_at']}`);
+                    }
+                });
+            } else {
+                $.each(result, (i, chave, value) => {
+                    if(chave[`${params}_direito`]) {   
+                        medida_direita.push(`${chave[`${params}_direito`]}`);
+                        medida_esquerda.push(`${chave[`${params}_esquerdo`]}`);
+                        dado.push(`${chave['created_at']}`);
+                    }
+                });
+            }
+            console.log(`Medida direita: ${medida_direita}`)
+            console.log(`Medida esquerda: ${medida_esquerda}`)
+            
+            $('#evolucaoMedidas').append(novoChartsMedida);
+            new Chart(document.getElementById("chartsMedidas"), {
+                type: 'bar',
+                data: {
+                    labels: dado,
+                    datasets: [
+                        {
+                            label: "Direito",
+                            backgroundColor: "#2e3192",
+                            data: medida_direita
+                        }, 
+                        {
+                            label: "Esquerdo",
+                            backgroundColor: "#F0B413",
+                            data: medida_esquerda
+                        }
+                    ]
+                },
+                options: {
+                    legend: {
+                        display: false
+                    },
+                    responsive: true,
+                        scaleStartValue: 0,
+                        scales: {
+                            xAxes: [{
+                                gridLines: {
+                                    color: "rgba(65, 104, 136, 0.4)",
+                                    borderDash: [5, 5],
+                                }
+                            }],
+                            yAxes: [{
+                                gridLines: {
+                                    color: "rgba(65, 104, 136, 0.2)",
+                                    drawBorder: false,
+                                },
+                                ticks: {
+                                    fontColor: "rgba(65, 104, 136, 1)",
+                                    fontSize: "12", 
+                                    min: 10,
+                                    },
+                            }]
+                        }
+                }
+            });
+        });
+        })
+        .catch(function(error) {
+            console.log('Operação deu erro: ' + error.message);
+        });
+    }
+
+    function chartsMedidasUnica(pk, params, qtd_de_avaliacoes) {
+        fetch(`/api/${pk}/${params}/?filter=${qtd_de_avaliacoes}`, {
+            method: 'get',
+            data: 'json',
+            dataType: "json",
+        })
+        .then((response) => {
+            response.json()
+        .then((data) => {   
+            $('#chartsMedidas').remove()
+            let novoChartsMedida = '<canvas id="chartsMedidas"></canvas>';
+            let result = data;
+            let resultado_medidas = []
+            let dado = [];
+            $.each(result, (i, chave, value) => {
+                if(chave[`${params}`]) {
+                    resultado_medidas.push(`${chave[`${params}`]}`);
+                    dado.push(`${chave['created_at']}`);
+                }
+            });
+            $('#evolucaoMedidas').append(novoChartsMedida);
+            new Chart(document.getElementById("chartsMedidas"), {
+                type: 'bar',
+                data: {
+                    labels: dado,
+                    datasets: [
+                        {
+                            label: "Direito",
+                            backgroundColor: "#F0B413",
+                            data: resultado_medidas
+                        }
+                    ]
+                },
+                options: {
+                    legend: {
+                        display: false
+                    },
+                    responsive: true,
+                        scaleStartValue: 0,
+                        scales: {
+                            xAxes: [{
+                                gridLines: {
+                                    color: "rgba(65, 104, 136, 0.4)",
+                                    borderDash: [5, 5],
+                                }
+                            }],
+                            yAxes: [{
+                            gridLines: {
+                                color: "rgba(65, 104, 136, 0.2)",
+                                drawBorder: false,
+                            },
+                            ticks: {
+                                fontColor: "rgba(65, 104, 136, 1)",
+                                fontSize: "12",
+                                min: 10
+                                },
+                            }]
+                        }
+                }
+            });
+        });
+        })
+        .catch(function(error) {
+            console.log('Operação deu erro: ' + error.message);
+        });
+    }
+</script>
+{% endblock scripts %}
