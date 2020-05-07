@@ -1,0 +1,65 @@
+$color-blue: #2E3192;
+$color-yellow: #F0B413;
+$color-purple: #6264AD;
+$color-grey: #979797;
+$color-white: #fff;
+$color-danger: #dc3545;
+$color-purple-light: rgba(46, 46, 146, .33);
+
+@import url('https://fonts.googleapis.com/css?family=Poppins:300,400,400i,500,500i,600,600i,700,800,900&display=swap');
+
+body, html {
+    font-family: 'Poppins', sans-serif;
+}
+.form-control {
+    &:focus {
+        box-shadow: none;
+    }
+}
+.dropdown-item.active, .dropdown-item:active {
+    color: inherit;
+    text-decoration: none;
+    background-color: inherit;
+}
+
+select.custom-select {
+    -webkit-appearance:none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+#pageLogin .custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
+    background-color: #F0B413;
+}
+
+h1 {
+    font-size: 2.63rem;
+    font-weight: 600;
+    @media(max-width: 650px) {
+        font-size: 2rem;
+    }
+}
+
+h2 {
+    font-size: 2.4rem;
+    font-weight: 600;
+    @media(max-width: 650px) {
+        font-size: 1.7rem;
+    }
+}
+
+.bg-blue {
+    background-color: $color-blue !important;
+}
+
+.bg-yellow {
+    background-color: $color-yellow !important;
+}
+
+.bg-purle {
+    background-color: $color-purple;
+}
+
+.bg-shadow {
+    box-shadow: 0px 3px 13px 3px rgba(0,0,0,0.25);
+}

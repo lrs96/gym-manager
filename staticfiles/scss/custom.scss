@@ -1,0 +1,334 @@
+
+@import "mixins/custom-mixins";
+@import "utilities/_configs";
+@import 'partials/topo';
+
+
+.swal2-icon.swal2-warning {
+    border-color: #f0b413 !important;
+color: #f0b413 !important;
+}
+.btn {
+    @include btn-base;
+    &.btn-base-blue {
+        background-color: $color-blue;
+        color: $color-white;
+        border-color: $color-blue;
+        &:hover {
+            background-color: $color-blue;
+            box-shadow: 0px 3px 15px 3px rgba(45,49,146,.45);
+            color: $color-white;
+            border-color: $color-blue; 
+        }
+    }
+    &.btn-base-blue-outline {
+        background-color: $color-white;
+        color: $color-blue;
+        border-color: $color-blue;
+        border-width: 1px;
+        &:hover {
+            background-color: $color-blue;
+            color: $color-white;
+            border-color: $color-blue; 
+        }
+    }
+    
+    &.btn-base-yellow {
+        background-color: $color-yellow;
+        color: $color-white;
+        border-color: $color-yellow;
+        &:hover {
+            background-color: $color-yellow;
+            color: $color-white;
+            border-color: $color-yellow;
+            box-shadow: 0px 3px 15px 3px rgba(0,0,0,.2);
+        }
+    }
+
+    &.btn-base-purple-light  {
+        background-color: $color-purple-light;
+        color: #2E3192;
+        border-color: $color-purple-light;
+        border-width: 0px;
+        &.white {
+            background: $color-white;
+            border-color: $color-purple;
+            border-width: 1px;
+            &:hover {
+                color: $color-purple;
+            }
+        }
+        &:hover {
+            background-color: $color-purple;
+            color: $color-white;
+            border-color: $color-purple;
+            box-shadow: 0px 3px 15px 3px rgba(46, 49, 146,.15);
+        }
+    }
+
+    &.btn-outline-danger {
+        color: $color-danger !important;
+        &:hover {
+            color: $color-white !important;
+        }
+    }
+}
+
+#pageLogin {
+    min-height: 100vh;
+    @include bg-image;
+    background-image: url(../img/bg-login.png);
+    @media (max-width: 991px) {
+        padding: 0 !important;
+        img {
+            max-width: 80px;
+        }
+    }
+}
+
+#criar-conta {
+    @include bg-image;
+    background-image: url(../img/bg-crie-sua-conta.png);
+}
+
+#esqueci-minha-senha {
+    @include bg-image;
+    background-image: url(../img/bg-recupere-sua-senha.png);
+
+}
+
+#mosaic {
+    z-index: 1;
+    position: relative;
+    h1 {
+        color: $color-blue;
+    }
+    form {
+        label {
+            font-weight: 500;
+            letter-spacing: .2px;
+            color: $color-blue;
+        }
+        .row.justify-content-between {
+            label, a {
+                font-size: .9rem;
+            }
+            a {
+                letter-spacing: .2px;
+                color: transparentize($color-blue, .1);
+            }
+        }
+    }
+    p {
+        &.subtitle {
+            color: $color-grey;
+            letter-spacing: .2px;
+            font-size: 1.1rem;
+                @media(max-width: 650px) {
+                    font-size: .8rem;
+                }
+        }
+    }
+}
+
+
+#content-dashboard {
+    background: linear-gradient(to bottom, #2e3192 350px, #fff 0);
+    background: -moz-linear-gradient(to bottom, #2e3192 350px, #fff 0);
+    background: -webkit-linear-gradient(to bottom, #2e3192 350px, #fff 0);
+    min-height: 100vh;
+}
+#sectionDadosAluno {
+    ul {
+        flex-direction: row;
+        li {
+            font-style: italic;
+            background-color: transparent;
+            position: relative;
+            a, a:hover {
+                color: #fff;
+            }
+            &:not(:first-child) {
+                padding-left: 2.5rem !important;
+                &::before {
+                    content: "/";
+                    position: absolute;
+                    top: 0;
+                    left: 15px;
+                }
+            }
+            &::before {
+                content: "";
+            }
+        }
+    }
+}
+#sectionTitlePage {
+    padding-top: 2rem;
+    h1 {
+        font-size: 1.8rem;
+        font-weight: 500;
+        letter-spacing: .5px;
+    }
+    ul {
+        flex-direction: row;
+        li {
+            font-style: italic;
+            background-color: transparent;
+            position: relative;
+            a, a:hover {
+                color: #fff;
+            }
+            &:not(:first-child) {
+                padding-left: 2.5rem !important;
+                &::before {
+                    content: "/";
+                    position: absolute;
+                    top: 0;
+                    left: 15px;
+                }
+            }
+            &::before {
+                content: "/";
+                position: absolute;
+                top: 0;
+                left: 25px;
+            }
+        }
+    }
+}
+
+#menuLat {
+    min-height: 100vh;
+    box-shadow: 3px 0 10px -1px rgba(0,0,0,0.16);
+    z-index: 1;
+    transition: .7s all ease-out;
+    background-color: #fff;
+    height: 100%;
+    position: sticky;
+    top: 0;
+
+    @media (max-width: 991px) {
+        position: fixed;
+        left: 0;
+        z-index: -1;
+        opacity: 0;
+        display: block;
+        &.drop {
+            opacity: 1;
+            z-index: 5;
+            transition: 1s all ease-out;
+        }
+    }
+    nav {
+        flex-direction: column;
+        .collapse {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            ul {
+                width: 100%;
+                @media (max-width: 1240px) and (min-width: 991px) {
+                    * {
+                        font-size: 90%;
+                    }
+                }
+                li {
+                    padding: 0;
+                    &.active {
+                        background-color: transparentize($color-blue, .8); 
+                        border-color: transparentize($color-blue, .5);
+                        a {
+                            font-weight: 500;
+                            i {
+                                color: $color-blue;
+                            }
+                        }
+                    }
+                    a {
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        color: $color-blue;
+                        padding: .75rem 1.25rem;
+                        &:hover {
+                            text-decoration: none;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+[data-section="insights"],
+[data-section="atalhos"] {
+    .card {
+        border: none;
+        box-shadow: 0px 3px 13px 3px rgba(0,0,0,.25);
+        h5 {
+            font-size: 2.7rem;
+            @media (max-width: 768px) {
+                font-size: 2rem;
+            }
+        }
+        p.percent {
+            font-size: 1rem;
+            letter-spacing: 1px;
+            color: #40BB3E;
+            font-weight: 600;
+            &.down {
+                color: #F12B2C;
+            }
+        }
+        .card-footer {
+            p {
+                color: #fff;
+                font-weight: 500;
+                letter-spacing: 1px;
+                @media (min-width: 991px) {
+                    font-size: 1rem;
+                }
+                @media (min-width: 1350px ) {
+                    font-size: 1.225rem;
+                }
+            }
+        }
+
+        &:first-child {
+            .card-footer {
+                background-color: rgba(46, 49, 146, .6);
+            }
+        }
+    }
+}
+
+#alunos_details {
+    form {
+        label[for='id_quantidade_de_avaliacoes'] {
+            padding-top: .8rem;
+        }
+    }
+}
+
+[data-section="listAlunos"] {
+    [data-id="listAlunosItem"] {
+        transition: .7s all ease-out;
+        border: 1px solid #ececec;
+        position: relative;
+        border-radius: .3rem;
+        &:hover {
+            border-color: transparent;
+            box-shadow: 0 5px 20px 4px rgba(0,0,0,.1);
+        }
+        p {
+            letter-spacing: .5px;
+        }
+
+        .dropright.absolute {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+        }
+    }
+}
