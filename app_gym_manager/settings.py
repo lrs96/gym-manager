@@ -24,7 +24,7 @@ SECRET_KEY = '%^(=2x8lekucl5^q2k0)w(dd$1ub^n#2x82s^yxdoi8aj2^^53'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['https://gym-manager-ws.herokuapp.com/']
+ALLOWED_HOSTS = ['*.herokuapp.com']
 
 # Application definition
 
