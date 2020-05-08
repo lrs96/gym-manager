@@ -79,9 +79,21 @@ color: #f0b413 !important;
     @include bg-image;
     background-image: url(../img/bg-login.png);
     @media (max-width: 991px) {
-        padding: 0 !important;
+        padding: 1rem 0 !important;
+        min-height: 100vh;
+        height: auto;
         img {
             max-width: 80px;
+        }
+    }
+    @media (max-width: 600px) {
+        background-image: none;
+        background-color: $color-blue;
+        img {
+            max-width: 60px;
+        }
+        h1 {
+            padding-bottom:0 !important ;
         }
     }
 }
@@ -126,6 +138,10 @@ color: #f0b413 !important;
             font-size: 1.1rem;
                 @media(max-width: 650px) {
                     font-size: .8rem;
+                }
+
+                @media(max-width: 479px) {
+                    display: none;
                 }
         }
     }
