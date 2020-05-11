@@ -13,7 +13,8 @@ def cadastrar_avaliacao_fisica(request, template_name='partials/alunos/add-avali
         return redirect(f'/listar-aluno/?campoFilter={query}')
 
     form = CadastroAvaliacaoFisicaAluno(request.POST)
-
+    nomes_dos_alunos = Aluno.objects.all().values('nome')
+    print('nome dos alunos: {}'.format(nomes_dos_alunos))
     if request.method == "POST":
         if form.is_valid():
             data = request.POST.copy()
@@ -23,7 +24,7 @@ def cadastrar_avaliacao_fisica(request, template_name='partials/alunos/add-avali
         else: 
             messages.error(request, 'Dados incorretos. Tente novamente')
             return redirect('cadastrar_avaliacao_fisica')
-    return render(request, template_name, {'form': form, 'filtro': campoFiltro })
+    return render(request, template_name, {'form': form, 'filtro': campoFiltro, 'nomes': nomes_dos_alunos })
 
 @login_required
 def editar_avaliacao(request, pk, template_name='partials/alunos/edit-avaliacao-fisica.html'):

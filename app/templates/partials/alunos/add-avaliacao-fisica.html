@@ -3,6 +3,7 @@
 {% block titlePage %} Cadastrar Avaliação {% endblock %}
 {% load add_class %}
 {% block content %}
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" type="text/css" media="all" />
 
 {% if request.user.is_staff %}
 <div class="container-fluid pageCadastrarAvaliacaoFisica">
@@ -47,7 +48,13 @@
                       <div class="col-12 col-md-6 col-lg-4">
                         <div class="form-group">
                           <label for="{{form.aluno.id_for_label}}">Escolha o Aluno:</label>
-                          {{form.aluno|add_class:'form-control' }}
+                          <input type="text" class="form-control" id="txtSearch" name="txtSearch">
+                        </div>
+                      </div>
+                      <div class="col-12 col-md-6 col-lg-4 d-none">
+                        <div class="form-group">
+                          <label for="{{form.aluno.id_for_label}}">Escolha o Aluno:</label>
+                          {{form.aluno|add_class:'form-control d-none' }}
                         </div>
                       </div>
                       <div class="col-12 col-md-6 col-lg-4">
@@ -147,9 +154,9 @@
                         </div>
                       </div>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-base-blue">
+                    <a id="addAvalicaoFisica" onclick="addAvaliacaoFisica($(this))" class="btn btn-primary btn-base-blue text-white">
                       Cadastrar avaliação
-                    </button>
+                    </a>
                   </div>
                 </div>
               </div>
@@ -163,3 +170,48 @@
 {% endif %}
 
 {% endblock content %}
+
+{% block scripts %}
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+  $(document).ready(() => {
+    let nomesDosAlunos = [ {% for item in nomes  %} '{{item.nome}}', {% endfor %} ]
+      $("#txtSearch").autocomplete({
+          source: nomesDosAlunos,
+          minLength: 2,
+          open: () => {
+              setTimeout(() => {
+                  $('.ui-autocomplete').css('z-index', 99);
+              }, 0);
+          }
+        });
+  });
+
+  function addAvaliacaoFisica(e) {
+    nome_do_aluno = $('#txtSearch').val()
+    debugger;
+    fetch(`/api/search-idluno/?filterAluno=${nome_do_aluno}`, {
+            method: 'get',
+            data: 'json',
+            dataType: "json",
+        })
+        .then((response) => {
+            response.json()
+        .then((data) => {
+            debugger;
+            let result = data;
+            $.each(result, (i, chave, value) => {
+              $('#id_aluno').val(`${chave['pk']}`)
+              debugger;
+            });
+            console.log(`result: ${result}`)
+            $('form').submit();
+        });
+        })
+        .catch(function(error) {
+            console.log('Operação deu erro: ' + error.message);
+        });
+  }
+</script>
+{% endblock scripts %}

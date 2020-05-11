@@ -4,6 +4,8 @@ from app.models import Aluno, Ficha_fisica
 from .serializer import MySerializer
 from .calculos.evolucao_fisica import CalculadorEvolucaoFisica
 from .calculos.get_medidas import GetMedidas
+import json
+from django.http import HttpResponse
 
 # Create your views here.
 @login_required
@@ -48,3 +50,16 @@ def api(request, pk, param):
             medidas.append(result_get_medidas)
 
     return JsonResponse(medidas, safe=False)
+
+
+
+def autocompleteModel(request):
+    q_aluno = request.GET.get('filterAluno')
+    query_list = MySerializer().serialize(Aluno.objects.filter(nome__iexact=q_aluno))
+    # print('alunos: {}'.format())
+    medidas = []
+    
+    for item in query_list:
+        medidas.append(item['fields'])
+    
+    return JsonResponse(query_list, safe=False)
