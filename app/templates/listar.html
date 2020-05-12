@@ -31,6 +31,11 @@
                                 <i class="material-icons">delete</i>
                                 </a>
                             </td>
+                            <td>
+                                <a href="{% url 'edit_user' pk=usuario.pk %}">
+                                <i class="material-icons">editar</i>
+                                </a>
+                            </td>
                             {% endif %}
                         </tr>
                         {% endfor %}

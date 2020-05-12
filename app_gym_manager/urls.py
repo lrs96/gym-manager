@@ -23,3 +23,8 @@ urlpatterns = [
     url('^', include('django.contrib.auth.urls')),
     url('^api/', include('api.urls'))
 ]
+
+
+admin.site.site_header = "Administração Cia Lite"
+admin.site.site_title = "Administração Cia Lite Portal"
+admin.site.index_title = "Administração do sistema"
