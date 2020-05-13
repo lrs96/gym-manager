@@ -147,4 +147,13 @@
 {% block scripts %}
 <script src="{% static 'js/libs/jqueryMask.min.js' %}"></script>
 <script src="{% static 'js/aluno/maskInputs.js' %}"></script>
+
+<script>
+$(document).ready(() => {
+  $('#id_dataNascimento').blur(() => {
+    let data = $('#id_dataNascimento').val();
+    calculaIdade(data);
+  })
+})
+</script>
 {% endblock %}
