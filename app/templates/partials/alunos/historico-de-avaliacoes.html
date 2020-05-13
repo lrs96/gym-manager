@@ -24,7 +24,7 @@
                               <a href="{% url 'aluno_list' %}">Lista de alunos</a>
                             </li>
                             <li class="list-group-item border-0 p-0">
-                              Avaliações do aluno {% for item in aluno  %} {{item.nome}} {% endfor %}
+                              Avaliações do aluno {% for item in aluno  %} {{item.nome|truncatewords:2}} {% endfor %}
                             </li>
                         </ul>
                     </div>

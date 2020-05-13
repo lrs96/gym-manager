@@ -69,7 +69,7 @@ def logar(request, template_name="login.html"):
     return render(request, template_name, {'redirect_to': next})
 
 
-@login_required
+@login_required 
 def edit_user(request, pk, template_name="partials/admin/editar-usuario.html"):
     # Filtrar Aluno
     query = request.GET.get("campoFilter")
@@ -78,7 +78,8 @@ def edit_user(request, pk, template_name="partials/admin/editar-usuario.html"):
         return redirect(f'/listar-aluno/?campoFilter={query}')
    
     usuarios = get_object_or_404(User, pk=pk)
-    return render(request, template_name, {'lista': usuarios, 'filtro': campoFiltro})
+    print(usuarios)
+    return render(request, template_name, {'lista': dict(usuarios), 'filtro': campoFiltro})
 
 @login_required
 def remover_usuario(request, pk, template_name='delete.html'):
