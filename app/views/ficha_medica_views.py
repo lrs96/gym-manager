@@ -14,7 +14,6 @@ def cadastrar_avaliacao_fisica(request, template_name='partials/alunos/add-avali
 
     form = CadastroAvaliacaoFisicaAluno(request.POST)
     nomes_dos_alunos = Aluno.objects.all().values('nome')
-    print('nome dos alunos: {}'.format(nomes_dos_alunos))
     if request.method == "POST":
         if form.is_valid():
             data = request.POST.copy()

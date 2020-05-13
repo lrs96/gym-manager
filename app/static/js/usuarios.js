@@ -81,3 +81,32 @@ function deleteUser(e) {
         }
     });
 }
+
+
+function criaModal(title, id_chart) {
+    let titulo = title
+    let chart = $(id_chart).val()
+    let content_modal = $(`#${id_chart}`)
+    let modal = $('.modal-lg-charts');
+    modal.find('.title-modal-header').text(titulo);
+    if($('.modal.body').hasClass('active')) {
+        $('.modal.body').remove()
+    }
+    modal.find('.modal-body').html(content_modal);
+    modal.find('.modal-body').addClass('active')
+    modal.modal({backdrop: 'static', keyboard: false})
+}
+
+function criaChartsAgain(e) {
+    let idModal = $('.modal canvas').attr('id')
+    if(idModal == 'chartsMedidas') {
+        let conteudo_dentro_do_modal = $('.modal canvas')
+        $('#evolucaoMedidas').append(conteudo_dentro_do_modal)
+    } else if (idModal == 'chartPercentualDeGordura') {
+        let conteudo_dentro_do_modal = $('.modal canvas')
+        $('#body-chart-gordura').append(conteudo_dentro_do_modal)
+    } else {
+        let conteudo_dentro_do_modal = $('.modal canvas')
+        $('#body-chart-peso').append(conteudo_dentro_do_modal)
+    }
+}

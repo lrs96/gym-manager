@@ -56,7 +56,6 @@ def api(request, pk, param):
 def autocompleteModel(request):
     q_aluno = request.GET.get('filterAluno')
     query_list = MySerializer().serialize(Aluno.objects.filter(nome__iexact=q_aluno))
-    # print('alunos: {}'.format())
     medidas = []
     
     for item in query_list:

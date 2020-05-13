@@ -62,6 +62,9 @@
                                                 <img src="{% static 'img/icon-user-run.svg' %}" class="img-fluid pr-3" alt="User">
                                                 <h2 class="mb-0 h5">Medidas do músculo</h2>
                                             </div>
+                                            <a style="cursor:pointer" onClick="criaModal('Medidas do músculo', 'chartsMedidas')">
+                                                <i class="fas fa-expand"></i>
+                                            </a>   
                                         </div>
                                         <div class="card-body" id="evolucaoMedidas">
                                             <canvas id="chartsMedidas"></canvas>
@@ -75,8 +78,9 @@
                                                 <img src="{% static 'img/icon-user-run.svg' %}" class="img-fluid pr-3" alt="User">
                                                 <h2 class="mb-0 h5">Porcentagem de gordura</h2>
                                             </div>
+                                            <a style="cursor:pointer" onClick="criaModal('Porcentagem de gordura', 'chartPercentualDeGordura')"><i class="fas fa-expand"></i></a>  
                                         </div>
-                                        <div class="card-body">
+                                        <div class="card-body" id="body-chart-gordura">
                                             <canvas id="chartPercentualDeGordura"></canvas>
                                         </div>
                                     </div>
@@ -88,8 +92,9 @@
                                                 <img src="{% static 'img/icon-user-run.svg' %}" class="img-fluid pr-3" alt="User">
                                                 <h2 class="mb-0 h5">Peso</h2>
                                             </div>
+                                            <a style="cursor:pointer" onClick="criaModal('Peso', 'chartPeso')"><i class="fas fa-expand"></i></a>  
                                         </div>
-                                        <div class="card-body">
+                                        <div class="card-body" id="body-chart-peso">
                                             <canvas id="chartPeso"></canvas>
                                         </div>
                                     </div>
@@ -101,11 +106,27 @@
             </div>
         </div>
     </div>
-{% endif %} 
+{% endif %}
+<!-- Large modal -->
+<div class="modal fade modal-lg-charts" tabindex="-1" role="dialog" aria-labelledby="modal-lg-charts" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="h5 mb-0 title-modal-header"></span>
+        <button type="button" onClick="criaChartsAgain($(this))" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body"></div>
+    </div>
+  </div>
+</div>
+
 {% endblock content %}
 
 {% block scripts %}
 <script src="{% static 'js/libs/charts.min.js' %}"></script>
+<script src="{% static 'js/usuarios.js' %}"></script>
 <script>
     $(document).ready(() => {      
 
@@ -161,20 +182,16 @@
         });
     });
 
-
     function FiltrarMedidas(e) {
         let selector = document.getElementById('id_filtros');
         let value = selector[selector.selectedIndex].value;
         let id = $('#idAlunoFiltro').val();
         let qtd_de_avaliacoes = $('#id_quantidade_de_avaliacoes').val();
-        console.log(`Quantidade de avaliações: ${qtd_de_avaliacoes}`)
         if( value == 'medida_antebraco' || value == 'medida_triceps' || value == 'medida_biceps' || value == 'medida_panturrilha' || value == 'medida_coxa') {
             chartsMedidas(id, value, qtd_de_avaliacoes);
         } else if (value == 'medida_costas' || value == 'medida_abdomen' || value == 'medida_peito') {
             chartsMedidasUnica(id, value, qtd_de_avaliacoes);
         }
-
-        console.log(value);
     }
 
     function chartPeso() {
