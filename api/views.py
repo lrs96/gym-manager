@@ -4,6 +4,7 @@ from app.models import Aluno, Ficha_fisica
 from .serializer import MySerializer
 from .calculos.evolucao_fisica import CalculadorEvolucaoFisica
 from .calculos.get_medidas import GetMedidas
+from .calculos.percentual_gordura import classifica_percentul_gordura
 import json
 from django.http import HttpResponse
 
@@ -62,3 +63,23 @@ def autocompleteModel(request):
         medidas.append(item['fields'])
     
     return JsonResponse(query_list, safe=False)
+
+
+def percentual_de_gordura(request, pk):
+    dados_aluno = MySerializer().serialize(Aluno.objects.filter(pk=pk), fields=['idade', 'sexo'])
+    dados_ficha_aluno = MySerializer().serialize(
+                        Ficha_fisica.objects.filter(aluno_id=pk).order_by('-created_at')[:1], fields=['percentual_gordura'])
+    lista = []
+    for item in dados_aluno:
+        lista.append(item['fields'])
+
+    for value in dados_ficha_aluno:
+        lista[0]['percentual_gordura'] = value['fields']['percentual_gordura']
+    
+    sexo = lista[0].get('sexo')
+    idade = lista[0].get('idade')
+    medida_percentual_gordura = lista[0].get('percentual_gordura')
+    classificacao = classifica_percentul_gordura(sexo, idade, medida_percentual_gordura)
+    lista[0]['classificacao'] = classificacao
+    
+    return JsonResponse(lista, safe=False)
