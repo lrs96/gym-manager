@@ -83,3 +83,21 @@ def percentual_de_gordura(request, pk):
     lista[0]['classificacao'] = classificacao
     
     return JsonResponse(lista, safe=False)
+
+
+def delete_aluno(request, pk):
+    response = {}
+
+    # Excluir Aluno
+    if request.method == "GET":
+        try:
+            aluno = Aluno.objects.get(pk=pk)
+            aluno.delete()
+            response['success'] = 'Aluno excluído com sucesso'
+            return JsonResponse(response, safe=False )
+        except:
+            response['error'] = 'erro ao excluir o aluno'
+            return JsonResponse(response, safe=False)
+    else:
+        response['error'] = 'Erro ao excluir o aluno'
+        return JsonResponse(response['Erro ao excluir o aluno'], safe=False)

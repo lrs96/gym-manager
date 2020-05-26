@@ -32,6 +32,9 @@ urlpatterns = [
     url(r'^reset/done/$', auth_views.PasswordResetCompleteView, name='password_reset_complete'),
 ]
 
+handler404 = 'app.views.aluno_views.handler404'
+# handler500 = 'app.views.aluno_views.handler500'
+
 
 admin.site.site_header = "Administração Cia Lite"
 admin.site.site_title = "Administração Cia Lite Portal"

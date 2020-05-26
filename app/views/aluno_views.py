@@ -6,7 +6,7 @@ from ..models import Aluno, Ficha_fisica
 from django.db.models import Count
 from django.http import JsonResponse
 from django.db import models
-
+from django.template import RequestContext
 
 @login_required
 def cadastrar_aluno(request, template_name='partials/alunos/aluno-form.html'):
@@ -135,3 +135,8 @@ def details_avaliacao(request, pk, template_name='partials/alunos/avaliacao-deta
 
     return render(request, template_name, {'avaliacoes': entrys, 'filtro': campoFiltro, 'aluno': aluno })
 
+
+def handler404(request, exception, template_name="404.html"):
+    response = render_to_response("404.html")
+    response.status_code = 404
+    return render(request, template_name)

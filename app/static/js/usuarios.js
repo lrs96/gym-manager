@@ -1,18 +1,3 @@
-
-function filterUser(e) {
-    var texto = $(e).val();
-    $("[data-id='listAlunosItem']").each(function () {
-        var resultado = $(this).text().toUpperCase().indexOf(' ' + texto.toUpperCase());
-
-        if (resultado < 0) {
-            $(this).fadeOut();
-        } else {
-            $(this).fadeIn();
-        }
-        debugger;
-    });
-}
-
 function deleteAvaliacao(e) {
     let action = $(e).find('#actionUser').val();
     Swal.fire({
@@ -31,20 +16,20 @@ function deleteAvaliacao(e) {
             popup: 'animated fadeOutUp faster'
         },
     })
-    .then((result) => {
-        if (result.value) {
-            $('#pkavaliacao').val(action);
-            Swal.fire({
-                icon: 'success',
-                title: 'Avaliação Excluída com sucesso',
-                showConfirmButton: false,
-                timer: 1500
-            })
-            .then((result) => {
-                 $('form').submit();
-            });
-        }
-    });
+        .then((result) => {
+            if (result.value) {
+                $('#pkavaliacao').val(action);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Avaliação Excluída com sucesso',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+                .then((result) => {
+                    $('form').submit();
+                });
+            }
+        });
 }
 
 function deleteUser(e) {
@@ -68,18 +53,41 @@ function deleteUser(e) {
     })
     .then((result) => {
         if (result.value) {
-            $('#pkAluno').val(action);
-            Swal.fire({
-                icon: 'success',
-                title: 'Aluno excluído com sucesso',
-                showConfirmButton: false,
-                timer: 1500
+            fetch(`/api/delete_aluno/${action}/`, {
+            method: 'get',
+            data: 'json',
+            dataType: "json",
             })
-            .then((result) => {
-                 $('form').submit();
-            });
+            .then((response) => {
+                response.json()
+                    .then((data) => {
+                        $.each(data, (i, chave) => {
+                            if(chave == 'success') {
+                                alert_retorn_delete_aluno('success', 'Aluno excluído com sucesso')
+                                setTimeout(() => {
+                                    window.location.reload()
+                                }, 1500)
+                            } else {
+                                alert_retorn_delete_aluno('error', 'Erro ao excluir o aluno. Tente novamente.')
+                            }
+                        });
+                    });
+            })
+            .catch(function (error) {
+                console.log('Operação deu erro: ' + error.message);
+            })
         }
-    });
+    })
+}
+
+
+function alert_retorn_delete_aluno(icon, title) {
+    Swal.fire({
+        icon: icon,
+        title: title,
+        showConfirmButton: false,
+        timer: 1500
+    })
 }
 
 
@@ -89,17 +97,17 @@ function criaModal(title, id_chart) {
     let content_modal = $(`#${id_chart}`)
     let modal = $('.modal-lg-charts');
     modal.find('.title-modal-header').text(titulo);
-    if($('.modal.body').hasClass('active')) {
+    if ($('.modal.body').hasClass('active')) {
         $('.modal.body').remove()
     }
     modal.find('.modal-body').html(content_modal);
     modal.find('.modal-body').addClass('active')
-    modal.modal({backdrop: 'static', keyboard: false})
+    modal.modal({ backdrop: 'static', keyboard: false })
 }
 
 function criaChartsAgain(e) {
     let idModal = $('.modal canvas').attr('id')
-    if(idModal == 'chartsMedidas') {
+    if (idModal == 'chartsMedidas') {
         let conteudo_dentro_do_modal = $('.modal canvas')
         $('#evolucaoMedidas').append(conteudo_dentro_do_modal)
     } else if (idModal == 'chartPercentualDeGordura') {
