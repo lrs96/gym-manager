@@ -1,6 +1,6 @@
 // Criação dos charts de Relatório Físico
 
-function cria_charts(dias_peso, medidas_peso, id) {
+function cria_charts(dias_peso, medidas_peso, id, prexifo) {
     new Chart(document.getElementById(`${id}`), {
         type: 'line',
         data: {
@@ -32,6 +32,9 @@ function cria_charts(dias_peso, medidas_peso, id) {
                         drawBorder: false,
                     },
                     ticks: {
+                        callback: function(value, index, values) {
+                            return `${value}${prexifo}`;
+                        },
                         fontColor: "rgba(65, 104, 136, 1)",
                         fontSize: "12", 
                         },
@@ -43,6 +46,7 @@ function cria_charts(dias_peso, medidas_peso, id) {
 
 
 function chartMedidas(dias, medida_direita, medida_esquerda, id) {
+    debugger;
     new Chart(document.getElementById(`${id}`), {
         type: 'bar',
         data: {
@@ -79,6 +83,9 @@ function chartMedidas(dias, medida_direita, medida_esquerda, id) {
                         drawBorder: false,
                     },
                     ticks: {
+                        callback: function(value, index, values) {
+                            return `${value}cm`;
+                        },
                         stepSize: 2,
                         fontColor: "rgba(65, 104, 136, 1)",
                         fontSize: "12", 

@@ -147,8 +147,8 @@
         let medida_esquerda = [{% for i in entrys %} {{i.medida_biceps_esquerdo|stringformat:'f'}}, {% endfor %}]
 
         // Funções
-        cria_charts(dias_charts_peso, medidas_charts_peso, 'chartPeso');
-        cria_charts(dias_charts_porcentagem_de_gordura, medidas_charts_porcentagem_de_gordura, 'chartPercentualDeGordura');
+        cria_charts(dias_charts_peso, medidas_charts_peso, 'chartPeso', 'kg');
+        cria_charts(dias_charts_porcentagem_de_gordura, medidas_charts_porcentagem_de_gordura, 'chartPercentualDeGordura', '%');
         chartMedidas(dias_charts_medida_musculo, medida_direita, medida_esquerda, 'chartsMedidas')
         getEnquadramentoPercentualGordura()   
         
