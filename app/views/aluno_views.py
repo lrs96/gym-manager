@@ -31,7 +31,7 @@ def listar_aluno(request, template_name="partials/alunos/aluno-list.html"):
     campoFiltro = FilterAluno()
 
     if query:
-        aluno = Aluno.objects.filter(nome__iexact=query)
+        aluno = Aluno.objects.filter(nome__contains=query)
     else:
         aluno = Aluno.objects.all()
     paginator = Paginator(aluno, 8)
