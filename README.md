@@ -12,7 +12,7 @@
 
 ```python
 
-python -m django --versio
+python -m django --version
 
 ```
 
